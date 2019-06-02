@@ -20,7 +20,7 @@ The following dependencys are required for this script to operate successfully w
 - [esx_kashacters](https://github.com/XxFri3ndlyxX/kashacters) - Optional Please ensure you have added xXFriendlysXx Switch Character fix aswell.
 
 
-###Intergrating Inventorys Tutorial
+### Intergrating Inventorys Tutorial
 
 To enable the inventory hud to work correctly with Motels you will need to add the files from the IHUD file to the Inventory Hud
 and move them to the following folder
@@ -50,7 +50,7 @@ client_scripts {
 We now need to adjust the Javascript files for inventory hud, to allow the loading of the Inventorys successfully
 Open esx_inventoryhud/html/js/inventory.js
 
-###Search for
+### Search for
 ```
         if (type === "normal") {
             $(".info-div").hide();
@@ -62,7 +62,8 @@ Open esx_inventoryhud/html/js/inventory.js
             $(".info-div").show();
         }
 ```
-###And replace with
+
+### And replace with
 
 ```
         if (type === "normal") {
@@ -81,7 +82,8 @@ Open esx_inventoryhud/html/js/inventory.js
 ```
 
 
-###Then further down the file search for the following
+### Then further down the file search for the following
+
 ```
 $('#playerInventory').droppable({
         drop: function (event, ui) {
@@ -111,7 +113,9 @@ $('#playerInventory').droppable({
         }
     });
 ```
-###and replace with
+
+### and replace with
+
 ```
 $('#playerInventory').droppable({
         drop: function (event, ui) {
@@ -153,7 +157,8 @@ $('#playerInventory').droppable({
     });
 ```
 
-###A few more lines down search for
+### A few more lines down search for
+
 ```
     $('#otherInventory').droppable({
         drop: function (event, ui) {
@@ -182,7 +187,8 @@ $('#playerInventory').droppable({
         }
     });
 ```
-###And replace with
+### And replace with
+
 ```
     $('#otherInventory').droppable({
         drop: function (event, ui) {
@@ -231,4 +237,4 @@ In your server.cfg file
 
 And restart your server, you should then be able to use the resource, if any problems arise please raise a request in the github,
 
-###PLEASE NOTE THIS IS A BETA RELEASE AT PRESENT
+### PLEASE NOTE THIS IS A BETA RELEASE AT PRESENT
