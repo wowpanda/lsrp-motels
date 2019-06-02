@@ -108,7 +108,7 @@ function PlayerDressings()
 	}, function(data, menu)
 
 		if data.current.value == 'player_dressing' then 
-
+            menu.close()
 			ESX.TriggerServerCallback('lsrp-motels:getPlayerDressing', function(dressing)
 				elements = {}
 
@@ -143,7 +143,7 @@ function PlayerDressings()
 			end)
 
 		elseif data.current.value == 'remove_cloth' then
-
+            menu.close()
 			ESX.TriggerServerCallback('lsrp-motels:getPlayerDressing', function(dressing)
 				elements = {}
 
@@ -477,6 +477,7 @@ function enteredExitMarker()
                         DrawMarker(20, v.roomExit.x, v.roomExit.y, v.roomExit.z, 0.0, 0.0, 0.0, 0, 0.0, 0.0, Config.RoomMarker.x, Config.RoomMarker.y, Config.RoomMarker.z, 255, 0, 0, 100, false, true, 2, false, false, false, false)	
                         DrawText3D(v.roomExit.x, v.roomExit.y, v.roomExit.z + 0.35, 'Press [~g~E~s~] to exit')
                         if IsControlJustReleased(0, Keys['E']) then
+                            ESX.UI.Menu.CloseAll()
                         TriggerEvent('lsrp-motels:exitRoom', curMotel, curRoom)
                         end
                     end  
