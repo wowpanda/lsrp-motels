@@ -27,7 +27,7 @@ and move them to the following folder
 
 "esx_inventoryhud/client"
 
-Secondly we need to load these files from the Inventory Hud resource within esx_inventoryhud open the __resource.lua file and add the following lines in the client_files section
+Secondly we need to load these files from the Inventory Hud resource within esx_inventoryhud open the __resource.lua file and add the following lines in the client_scripts section
 
 ```
 "client/motels.lua",
