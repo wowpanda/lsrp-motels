@@ -429,3 +429,26 @@ ESX.RegisterServerCallback('lsrp-motels:getPlayerInventoryBed', function(source,
 		weapons    = xPlayer.getLoadout()
 	})
 end)
+
+
+function PayRent(d, h, m)
+	MySQL.Async.fetchAll('SELECT * FROM lsrp_motels', {}, function (result)
+		for i=1, #result, 1 do
+			local xPlayer = ESX.GetPlayerFromIdentifier(result[i].ident)
+
+			-- message player if connected
+			if xPlayer then
+				xPlayer.removeAccountMoney('bank', Config.PriceRental)
+				TriggerClientEvent('esx:showNotification', xPlayer.source, _U('paid_rent', ESX.Math.GroupDigits(Config.PriceRental))..' for motel room')
+			else -- pay rent either way
+				MySQL.Sync.execute('UPDATE users SET bank = bank - @bank WHERE identifier = @identifier',
+				{
+					['@bank']       = Config.PriceRental,
+					['@identifier'] = result[i].owner
+				})
+			end
+		end
+	end)
+end
+
+TriggerEvent('cron:runAt', 22, 0, PayRent)
