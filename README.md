@@ -19,6 +19,16 @@ The following dependencys are required for this script to operate successfully w
 - [mythic_progbar](https://github.com/mythicrp/progressbar)
 - [esx_kashacters](https://github.com/XxFri3ndlyxX/kashacters) - Optional Please ensure you have added xXFriendlysXx Switch Character fix aswell.
 
+### Features
+------------
+
+- Motel Room Storage
+- Motel Room Bed Stash
+- Change / Load Saved Outfits
+- Configuarition of Multiple Motels & Rooms
+- Configurable Options
+- Instanced
+- Instanced Voice
 
 ### Intergrating Inventorys Tutorial
 
