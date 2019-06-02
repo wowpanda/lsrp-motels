@@ -29,12 +29,15 @@ and move them to the following folder
 
 Secondly we need to load these files from the Inventory Hud resource within esx_inventoryhud open the __resource.lua file and add the following lines in the client_files section
 
-```"client/motels.lua",
-"client/beds.lua",```
+```
+"client/motels.lua",
+"client/beds.lua",
+```
 
 The end result would look something similar to
 
-```client_scripts {
+```
+client_scripts {
   "@es_extended/locale.lua",
   "client/main.lua",
   "client/trunk.lua",
@@ -46,14 +49,16 @@ The end result would look something similar to
   "locales/en.lua",
   "locales/fr.lua",
   "config.lua"
-}```
+}
+```
 
 We now need to adjust the Javascript files for inventory hud, to allow the loading of the Inventorys successfully
 Open esx_inventoryhud/html/js/inventory.js
 
 ### Search for
 
-```if (type === "normal") {
+```
+if (type === "normal") {
             $(".info-div").hide();
         } else if (type === "trunk") {
             $(".info-div").show();
@@ -61,11 +66,13 @@ Open esx_inventoryhud/html/js/inventory.js
             $(".info-div").hide();
         } else if (type === "player") {
             $(".info-div").show();
-        }```
+        }
+```
 
 ### And replace with
 
-```if (type === "normal") {
+```
+if (type === "normal") {
             $(".info-div").hide();
         } else if (type === "trunk") {
             $(".info-div").show();
@@ -77,11 +84,13 @@ Open esx_inventoryhud/html/js/inventory.js
             $(".info-div").hide();
         } else if (type === "player") {
             $(".info-div").show();
-        }```
+        }
+```
 
 ### Then further down the file search for the following
 
-```$('#playerInventory').droppable({
+```
+$('#playerInventory').droppable({
         drop: function (event, ui) {
             itemData = ui.draggable.data("item");
             itemInventory = ui.draggable.data("inventory");
@@ -107,11 +116,13 @@ Open esx_inventoryhud/html/js/inventory.js
                 }));
             }
         }
-    });```
+    });
+```
 
 ### and replace with
 
-```$('#playerInventory').droppable({
+```
+$('#playerInventory').droppable({
         drop: function (event, ui) {
             itemData = ui.draggable.data("item");
             itemInventory = ui.draggable.data("inventory");
@@ -148,11 +159,13 @@ Open esx_inventoryhud/html/js/inventory.js
                 }));
             }
         }
-    });```
+    });
+```
 
 ### A few more lines down search for
 
-```$('#otherInventory').droppable({
+```
+$('#otherInventory').droppable({
         drop: function (event, ui) {
             itemData = ui.draggable.data("item");
             itemInventory = ui.draggable.data("inventory");
@@ -177,11 +190,13 @@ Open esx_inventoryhud/html/js/inventory.js
                 }));
             }
         }
-    });```
+    });
+```
 
 ### And replace with
 
-```$('#otherInventory').droppable({
+```
+$('#otherInventory').droppable({
         drop: function (event, ui) {
             itemData = ui.draggable.data("item");
             itemInventory = ui.draggable.data("inventory");
@@ -218,13 +233,16 @@ Open esx_inventoryhud/html/js/inventory.js
                 }));
             }
         }
-    });```
+    });
+```
 
 Ensure that you run the SQL File provided which adds the correct Motels Table, and also enables the correct datastores to be created
 
 In your server.cfg file 
 
-```start lsrp-motels```
+```
+start lsrp-motels
+```
 
 And restart your server, you should then be able to use the resource, if any problems arise please raise a request in the github,
 
