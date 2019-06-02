@@ -315,8 +315,26 @@ AddEventHandler('lsrp-motels:roomMenu', function(room, motel)
         local value = data.current.value
         if value == 'changechar' then
             menu.close()
-            TriggerEvent('kashactersC:ReloadCharacters')
-            TriggerServerEvent("kashactersS:SaveSwitchedPlayer")
+            TriggerEvent("mythic_progbar:client:progress", {
+                name = "renting_motel",
+                duration = 2000,
+                label = "Leaving the City",
+                useWhileDead = false,
+                canCancel = true,
+                controlDisables = {
+                        disableMovement = true,
+                        disableCarMovement = false,
+                        disableMouse = false,
+                        disableCombat = true,
+                },
+                
+        }, function(status)
+                if not status then
+                    TriggerEvent('kashactersC:ReloadCharacters')
+                    TriggerServerEvent("kashactersS:SaveSwitchedPlayer")
+                end
+        end)
+
         elseif value == 'inventory' then
             menu.close()
 
@@ -353,7 +371,6 @@ AddEventHandler('lsrp-motels:roomMenu', function(room, motel)
             for k,v in pairs(Config.Zones) do
                 for kk,vm in pairs(v.Rooms) do       
                     if room == vm.instancename then
-                        print(vm.entry.x..' '..vm.entry.y..' '..vm.entry.z..' 5.0 '..reqmotel..' '..roomIdent)
                         playersInArea = ESX.Game.GetPlayersInArea(vm.entry, 5.0)
                     end
                 end
