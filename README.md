@@ -22,7 +22,7 @@ The following dependencys are required for this script to operate successfully w
 
 ### Intergrating Inventorys Tutorial
 
-To enable the inventory hud to work correctly with Motels you will need to add the files from the IHUD file to the Inventory Hud
+To enable the inventory hud to work correctly with Motels you will need to add the files from the IHUD folder to the Inventory Hud
 and move them to the following folder
 
 "esx_inventoryhud/client"
