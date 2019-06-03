@@ -190,13 +190,10 @@ AddEventHandler('instance:onEnter', function(instance)
         local property = instance.data.property
         local motel = instance.data.motel
         local isHost   = GetPlayerFromServerId(instance.host) == PlayerId()
-        Citizen.Wait(1000)
-               SetNoiseoveride(true)
-               local networkChannel = instance.data.vid
-               print('Joining '..networkChannel)
-               NetworkSetVoiceChannel(networkChannel)
-               NetworkSetTalkerProximity(30.0)
-               print('Joined '..networkChannel)
+            Citizen.Wait(1000)
+        local networkChannel = instance.data.vid
+        NetworkSetVoiceChannel(networkChannel)
+        NetworkSetTalkerProximity(30.0)
 	end
 end)
 
@@ -204,7 +201,6 @@ AddEventHandler('instance:loaded', function()
     TriggerEvent('instance:registerType', 'motelroom', function(instance)
         EnterProperty(instance.data.property, instance.data.owner, instance.data.motel, instance.data.room)
     end, function(instance)
-        SetNoiseoveride(false)
         Citizen.InvokeNative(0xE036A705F989E049)
 		ExitProperty(instance.data.property, instance.data.motel, instance.data.room)
 	end)
