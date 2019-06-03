@@ -232,7 +232,6 @@ AddEventHandler('instance:onEnter', function(instance)
             Citizen.Wait(1000)
         local networkChannel = instance.data.vid
         NetworkSetVoiceChannel(networkChannel)
-        NetworkSetTalkerProximity(30.0)
 	end
 end)
 
