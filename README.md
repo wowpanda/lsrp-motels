@@ -17,7 +17,7 @@ The following dependencys are required for this script to operate successfully w
 - [esx_datastore](https://github.com/ESX-Org/esx_datastore)
 - [esx_inventoryhud 2.3+](https://github.com/Trsak/esx_inventoryhud)
 - [mythic_progbar](https://github.com/mythicrp/progressbar)
-- [esx_kashacters](https://github.com/XxFri3ndlyxX/kashacters) - Optional Please ensure you have added xXFriendlysXx Switch Character fix aswell.
+- [esx_kashacters](https://github.com/XxFri3ndlyxX/kashacters) - Optional Please ensure you have added XxFri3ndlyxX's Switch Character fix aswell.
 
 ### Features
 ------------
