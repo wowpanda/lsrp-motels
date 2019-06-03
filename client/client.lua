@@ -18,6 +18,7 @@ local curRoomOwner = false
 local inRoom = false
 local roomOwner = nil
 local playerIdent = nil
+local inMotel = false
 
 Citizen.CreateThread(function()
 	while ESX == nil do
@@ -50,6 +51,7 @@ AddEventHandler('playerSpawned', function()
                             curMotel      = motel
                             curRoom       = room
                             inRoom        = true
+                            inMotel       = true
                             local roomID = nil
                             local playerPed = PlayerPedId()
                             local roomIdent = room
@@ -248,6 +250,7 @@ function EnterProperty(name, owner, motel, room)
     curMotel      = motel
     curRoom       = room
     inRoom        = true
+    inMotel       = true
     local playerPed     = PlayerPedId() 
     TriggerServerEvent('lsrp-motels:SaveMotel', curMotel, curRoom)
     Citizen.CreateThread(function()
@@ -385,7 +388,7 @@ AddEventHandler('lsrp-motels:roomMenu', function(room, motel)
                 
         }, function(status)
                 if not status then
-                    
+                    inMotel = false
                     TriggerEvent('kashactersC:ReloadCharacters')
                 end
         end)
@@ -617,6 +620,7 @@ function ExitProperty(name, motel, room)
 	local property  = name
     local playerPed = PlayerPedId()
     inRoom          = false
+    inMotel         = false
     TriggerServerEvent('lsrp-motels:DelMotel')
 	Citizen.CreateThread(function()
 		DoScreenFadeOut(800)
@@ -653,7 +657,7 @@ Citizen.CreateThread(function()
                 roomMarkers()
             end 
 
-            if not inRoom then
+            if not inMotel then
                 for k,v in pairs(Config.Zones) do
                     distance = GetDistanceBetweenCoords(coords, v.Pos.x, v.Pos.y, v.Pos.z, true)
                     if (distance < v.Boundries) then
