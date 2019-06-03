@@ -18,6 +18,14 @@ function refreshPropertyMotelBedInventory()
 end
 
 function setPropertyMotelDataBed(data)
+
+    SendNUIMessage(
+                {
+                    action = "setInfoText",
+                    text = "Bed Stash"
+                }
+            )
+
     items = {}
 
     local blackMoney = data.blackMoney

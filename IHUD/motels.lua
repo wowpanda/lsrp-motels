@@ -20,6 +20,13 @@ end
 function setPropertyMotelData(data)
     items = {}
 
+    SendNUIMessage(
+                {
+                    action = "setInfoText",
+                    text = "Motel Inventory"
+                }
+            )
+
     local blackMoney = data.blackMoney
     local propertyItems = data.items
     local propertyWeapons = data.weapons
