@@ -388,9 +388,41 @@ ESX.RegisterServerCallback('lsrp-motels:checkIsOwner', function(source, cb, room
         else
             cb(false)
         end
-
     end)
+end)
 
+RegisterServerEvent('lsrp-motels:SaveMotel')
+AddEventHandler('lsrp-motels:SaveMotel', function(motel, room)
+	local xPlayer  = ESX.GetPlayerFromId(source)
+	local motelname = motel
+	local roomident = room
+	print(roomident)
+
+	MySQL.Sync.execute('UPDATE users SET last_motel = @motelname, last_motel_room = @lroom WHERE identifier = @identifier',
+	{
+		['@motelname']        = motelname,
+		['@lroom'] 			  = roomident,
+		['@identifier'] 	  = xPlayer.identifier
+	})
+end)
+
+RegisterServerEvent('lsrp-motels:DelMotel')
+AddEventHandler('lsrp-motels:DelMotel', function()
+	local xPlayer  = ESX.GetPlayerFromId(source)
+	MySQL.Sync.execute('UPDATE users SET last_motel = NULL, last_motel_room = NULL WHERE identifier = @identifier',
+	{
+		['@identifier'] 	  = xPlayer.identifier
+	})
+end)
+
+ESX.RegisterServerCallback('lsrp-motels:getLastMotel', function(source, cb)
+	local xPlayer = ESX.GetPlayerFromId(source)
+
+	MySQL.Async.fetchAll('SELECT last_motel, last_motel_room FROM users WHERE identifier = @identifier', {
+		['@identifier'] = xPlayer.identifier
+	}, function(users)
+		cb(users[1].last_motel, users[1].last_motel_room)
+	end)
 end)
 
 ESX.RegisterServerCallback('lsrp-motels:getPropertyInventoryBed', function(source, cb, owner)

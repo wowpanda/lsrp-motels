@@ -22,3 +22,5 @@ ALTER TABLE `lsrp_motels`
   ADD KEY `ident` (`ident`);
   
 ALTER TABLE `lsrp_motels` MODIFY `id` bigint(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
+ALTER TABLE users ADD last_motel VARCHAR(50) NULL, ADD last_motel_room VARCHAR(50) NULL;

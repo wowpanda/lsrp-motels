@@ -33,6 +33,45 @@ Citizen.CreateThread(function()
 end)
 
 
+AddEventHandler('playerSpawned', function()
+
+
+		Citizen.CreateThread(function()
+
+			while not ESX.IsPlayerLoaded() do
+				Citizen.Wait(0)
+			end
+            Citizen.Wait(1000)
+            ESX.TriggerServerCallback('lsrp-motels:getLastMotel', function(motel, room)
+                print('loading saved room')
+				if motel and room then
+                    if motel ~= nil and room ~= nil then
+                        print('loading saved room 2')
+                            curMotel      = motel
+                            curRoom       = room
+                            inRoom        = true
+                            local roomID = nil
+                            local playerPed = PlayerPedId()
+                            local roomIdent = room
+                            local reqmotel = motel
+                            ESX.TriggerServerCallback('lsrp-motels:getMotelRoomID', function(roomno)
+                            roomID = roomno
+                            end, room)
+                            Citizen.Wait(500)
+                            if roomID ~= nil then
+                            local instanceid = 'motel'..roomID..''..roomIdent
+                                TriggerEvent('instance:create', 'motelroom', {property = instanceid, owner = ESX.GetPlayerData().identifier, motel = reqmotel, room = roomIdent, vid = roomID})
+                            end
+					end
+				end
+			end)
+		end)
+
+
+
+end)
+
+
 function createBlips()
     for k,v in pairs(Config.Zones) do
             local blip = AddBlipForCoord(tonumber(v.Pos.x), tonumber(v.Pos.y), tonumber(v.Pos.z))
@@ -211,6 +250,7 @@ function EnterProperty(name, owner, motel, room)
     curRoom       = room
     inRoom        = true
     local playerPed     = PlayerPedId() 
+    TriggerServerEvent('lsrp-motels:SaveMotel', curMotel, curRoom)
     Citizen.CreateThread(function()
 		DoScreenFadeOut(800)
 		while not IsScreenFadedOut() do
@@ -578,6 +618,7 @@ function ExitProperty(name, motel, room)
 	local property  = name
     local playerPed = PlayerPedId()
     inRoom          = false
+    TriggerServerEvent('lsrp-motels:DelMotel')
 	Citizen.CreateThread(function()
 		DoScreenFadeOut(800)
 		while not IsScreenFadedOut() do
