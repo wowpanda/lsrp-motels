@@ -19,6 +19,10 @@ local inRoom = false
 local roomOwner = nil
 local playerIdent = nil
 local inMotel = false
+local enterMotel = false
+local exitMotel = false
+local FirstSpawn = true
+local letSleep = false
 
 Citizen.CreateThread(function()
 	while ESX == nil do
@@ -35,9 +39,8 @@ end)
 
 
 AddEventHandler('playerSpawned', function()
-
-
-		Citizen.CreateThread(function()
+    if FirstSpawn then
+        Citizen.CreateThread(function()
 
 			while not ESX.IsPlayerLoaded() do
 				Citizen.Wait(0)
@@ -67,7 +70,9 @@ AddEventHandler('playerSpawned', function()
 					end
 				end
 			end)
-		end)
+        end)
+       FirstSpawn = false 
+    end
 
 
 
@@ -89,9 +94,12 @@ function createBlips()
 end
 
 function getMyMotel()
-ESX.TriggerServerCallback('lsrp-motels:checkOwnership', function(owned)
-    myMotel = owned
-end)
+    if not letSleep then
+        ESX.TriggerServerCallback('lsrp-motels:checkOwnership', function(owned)
+            myMotel = owned
+        end)
+        letSleep = true
+    end
 end
 
 RegisterNetEvent('instance:onCreate')
@@ -137,6 +145,7 @@ anim = "idle_a",
 }, function(status)
         if not status then
             myMotel = false
+            letSleep = false
         end
 end)
 end)
@@ -227,7 +236,6 @@ end
 RegisterNetEvent('instance:onEnter')
 AddEventHandler('instance:onEnter', function(instance)
     if instance.type == 'motelroom' then
-        
         local property = instance.data.property
         local motel = instance.data.motel
         local isHost   = GetPlayerFromServerId(instance.host) == PlayerId()
@@ -239,32 +247,38 @@ end)
 
 AddEventHandler('instance:loaded', function()
     TriggerEvent('instance:registerType', 'motelroom', function(instance)
-        EnterProperty(instance.data.property, instance.data.owner, instance.data.motel, instance.data.room)
+        enterMotel = true
+        EnterMotel(instance.data.property, instance.data.owner, instance.data.motel, instance.data.room)
     end, function(instance)
+        exitMotel = true
         Citizen.InvokeNative(0xE036A705F989E049)
-		ExitProperty(instance.data.property, instance.data.motel, instance.data.room)
+		ExitMotel(instance.data.property, instance.data.motel, instance.data.room)
 	end)
 end)
 
-function EnterProperty(name, owner, motel, room)
-    curMotel      = motel
-    curRoom       = room
-    inRoom        = true
-    inMotel       = true
-    local playerPed     = PlayerPedId() 
-    TriggerServerEvent('lsrp-motels:SaveMotel', curMotel, curRoom)
-    Citizen.CreateThread(function()
-		DoScreenFadeOut(800)
-		while not IsScreenFadedOut() do
-			Citizen.Wait(0)
-        end
-        for k,v in pairs(Config.Zones) do     
-                if curMotel == k then
-                    SetEntityCoords(playerPed, v.roomLoc.x, v.roomLoc.y, v.roomLoc.z)
-                end
-        end
-		DoScreenFadeIn(800)
-	end)
+function EnterMotel(name, owner, motel, room)
+    if enterMotel then
+        curMotel      = motel
+        curRoom       = room
+        inRoom        = true
+        inMotel       = true
+        enterMotel    = false
+        local playerPed     = PlayerPedId()
+
+        TriggerServerEvent('lsrp-motels:SaveMotel', curMotel, curRoom)
+        Citizen.CreateThread(function()
+            DoScreenFadeOut(800)
+            while not IsScreenFadedOut() do
+                Citizen.Wait(0)
+            end
+            for k,v in pairs(Config.Zones) do     
+                    if curMotel == k then
+                        SetEntityCoords(playerPed, v.roomLoc.x, v.roomLoc.y, v.roomLoc.z)
+                    end
+            end
+            DoScreenFadeIn(800)
+        end)
+    end
 end
 
 RegisterNetEvent('lsrp-motels:enterRoom')
@@ -416,6 +430,7 @@ AddEventHandler('lsrp-motels:roomMenu', function(room, motel)
                         
                 }, function(status)
                         if not status then
+                            exports["esx_inventoryhud"]:refreshPropertyMotelInventory()
                             OpenPropertyInventoryMenu('motels', owner)
                         end
                 end)    
@@ -508,7 +523,7 @@ anim = "idle_a",
         }
 }, function(status)
         if not status then
-
+            letSleep = false
         end
 end)
 
@@ -564,6 +579,7 @@ function roomMarkers()
             if roomOwner == playerIdent then
             DrawText3D(v.BedStash.x, v.BedStash.y, v.BedStash.z + 0.1, 'Press [~g~E~s~] to access stash.')
                 if IsControlJustReleased(0, Keys['E']) then
+                    exports["esx_inventoryhud"]:refreshPropertyMotelBedInventory()
                     OpenStash()
                 end
             end
@@ -616,26 +632,31 @@ end
 
 
 
-function ExitProperty(name, motel, room)
-	local property  = name
-    local playerPed = PlayerPedId()
-    inRoom          = false
-    inMotel         = false
-    TriggerServerEvent('lsrp-motels:DelMotel')
-	Citizen.CreateThread(function()
-		DoScreenFadeOut(800)
-		while not IsScreenFadedOut() do
-			Citizen.Wait(0)
-		end
-        for k,v in pairs(Config.Zones) do
-            for km,vm in pairs(v.Rooms) do
-                if room == vm.instancename then
-                SetEntityCoords(playerPed, vm.entry.x, vm.entry.y, vm.entry.z)
+function ExitMotel(name, motel, room)
+    if exitMotel then
+        local property  = name
+        local playerPed = PlayerPedId()
+        inRoom          = false
+        inMotel         = false
+        TriggerServerEvent('lsrp-motels:DelMotel')
+
+        exitMotel = false
+        Citizen.CreateThread(function()
+            DoScreenFadeOut(800)
+            while not IsScreenFadedOut() do
+                Citizen.Wait(0)
+            end
+            for k,v in pairs(Config.Zones) do
+                for km,vm in pairs(v.Rooms) do
+                    if room == vm.instancename then
+                    SetEntityCoords(playerPed, vm.entry.x, vm.entry.y, vm.entry.z)
+                    end
                 end
             end
-        end
-		DoScreenFadeIn(800)
-	end)
+            DoScreenFadeIn(800)
+        end)
+    end
+
 end
 
 Citizen.CreateThread(function()
