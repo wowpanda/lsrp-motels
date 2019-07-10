@@ -26,6 +26,15 @@ AddEventHandler('lsrp-motels:rentRoom', function(room)
 
 end)
 
+ESX.RegisterServerCallback('lsrp-motels:isMotelTaken', function(source, cb, room)
+	local src = source
+	MySQL.Async.fetchAll("SELECT COUNT(*) as count FROM lsrp_motels WHERE motel_id = @room", {['@room'] = tostring(room)}, 
+	function(status)
+		cb(status[1].count)
+	end)
+end)
+
+
 ESX.RegisterServerCallback('lsrp-motels:getMotelRoomID', function(source, cb, room)
     local src = source
     local pid = ESX.GetPlayerFromId(src)
