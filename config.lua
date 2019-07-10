@@ -4,6 +4,7 @@ Config = {}
 Config.PriceRental            = 50      -- How much rental of a Motel Room apartment is - 0 = Free.
 Config.Locale                 = 'en'    -- Only defaultly supports English, feel free to add addtional language support.
 Config.SwitchCharacterSup     = true    -- Optional Please ensure you have added xXFriendlysXx Switch Character fix aswell.
+Config.LockRentedRooms	      = true	-- Set to 'false' if you want multiple players to rent same room
 
 Config.RoomMarker = {
     Owned = {r = 255, g = 0, b = 0},     -- Owned Motel Color
