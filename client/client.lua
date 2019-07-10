@@ -19,6 +19,7 @@ local inRoom = false
 local roomOwner = nil
 local playerIdent = nil
 local inMotel = false
+local motelTaken = false
 
 Citizen.CreateThread(function()
 	while ESX == nil do
@@ -601,11 +602,18 @@ else
             if (distance < v.Boundries) then
                 for km,vm in pairs(v.Rooms) do
                     distance = GetDistanceBetweenCoords(coords, vm.entry.x, vm.entry.y, vm.entry.z, true)
-                    if (distance < 1.0) then
-                        DrawText3D(vm.entry.x, vm.entry.y, vm.entry.z + 0.35, 'Press [~g~E~s~] to rent Room ~b~'..vm.number..' ~w~for $~b~'..Config.PriceRental)
-                        if IsControlJustReleased(0, Keys['E']) then
-                            TriggerEvent('lsrp-motels:rentRoom', vm.instancename)
-                        end
+			if (distance < 3.0) then
+				checkIsTaken(vm)	
+			end
+                    	if (distance < 1.0) then
+				if  motelTaken == false then			
+				DrawText3D(vm.entry.x, vm.entry.y, vm.entry.z + 0.35, 'Press [~g~E~s~] to rent Room ~b~'..vm.number..' ~w~for $~b~'..Config.PriceRental)
+				if IsControlJustReleased(0, Keys['E']) then
+				    TriggerEvent('lsrp-motels:rentRoom', vm.instancename)
+				end
+			else
+				DrawText3D(vm.entry.x, vm.entry.y, vm.entry.z + 0.35, '~r~Room is Taken')
+			end
                     end
                 end
             end
@@ -614,7 +622,16 @@ else
 
 end
 
+function checkIsTaken(vm)
 
+    ESX.TriggerServerCallback('lsrp-motels:isMotelTaken', 
+        function(roomStatus)
+            if  roomStatus == 0 then 
+                motelTaken = false
+            else 
+                motelTaken = true
+            end                            
+    end, vm.instancename) 
 
 function ExitProperty(name, motel, room)
 	local property  = name
