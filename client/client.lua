@@ -606,7 +606,7 @@ else
 				checkIsTaken(vm)	
 			end
                     	if (distance < 1.0) then
-				if  motelTaken == false then			
+				if  Config.LockRentedRooms == false or motelTaken == false then			
 				DrawText3D(vm.entry.x, vm.entry.y, vm.entry.z + 0.35, 'Press [~g~E~s~] to rent Room ~b~'..vm.number..' ~w~for $~b~'..Config.PriceRental)
 				if IsControlJustReleased(0, Keys['E']) then
 				    TriggerEvent('lsrp-motels:rentRoom', vm.instancename)
