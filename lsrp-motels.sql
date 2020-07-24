@@ -1,6 +1,8 @@
 INSERT INTO `addon_account` (`name`, `label`, `shared`) VALUES
 ('motels_bed_black_money', 'Motels Black Money Bed', 0),
-('motels_black_money', 'Motels Black Money ', 0);
+('motels_black_money', 'Motels Black Money ', 0),
+('motels_bed_money', 'Motels Money Bed', 0),
+('motels_money', 'Motels Money ', 0);
 
 INSERT INTO `addon_inventory` (`name`, `label`, `shared`) VALUES
 ('motels', 'Motels Inventory', 0),

@@ -77,12 +77,13 @@ AddEventHandler('lsrp-motels:getItem', function(owner, type, item, count)
 			if count > 0 and inventoryItem.count >= count then
 			
 				-- can the player carry the said amount of x item?
-				if sourceItem.limit ~= -1 and (sourceItem.count + count) > sourceItem.limit then
-					TriggerClientEvent('esx:showNotification', _source, _U('player_cannot_hold'))
-				else
+				--if sourceItem.limit ~= nil and (sourceItem.count + count) > sourceItem.limit then
+				if xPlayer.canCarryItem(item, count) then
 					inventory.removeItem(item, count)
 					xPlayer.addInventoryItem(item, count)
 					TriggerClientEvent('esx:showNotification', _source, _U('have_withdrawn', count, inventoryItem.label))
+				else
+					TriggerClientEvent('esx:showNotification', _source, _U('player_cannot_hold'))
 				end
 			else
 				TriggerClientEvent('esx:showNotification', _source, _U('not_enough_in_property'))
@@ -182,11 +183,15 @@ end)
 ESX.RegisterServerCallback('lsrp-motels:getPropertyInventory', function(source, cb, owner)
 	local xPlayer    = ESX.GetPlayerFromIdentifier(owner)
 	local blackMoney = 0
+	local money = 0
 	local items      = {}
 	local weapons    = {}
 
 	TriggerEvent('esx_addonaccount:getAccount', 'motels_black_money', xPlayer.identifier, function(account)
 		blackMoney = account.money
+	end)
+	TriggerEvent('esx_addonaccount:getAccount', 'motels_money', xPlayer.identifier, function(account2)
+		money = account2.money
 	end)
 
 	TriggerEvent('esx_addoninventory:getInventory', 'motels', xPlayer.identifier, function(inventory)
@@ -199,6 +204,7 @@ ESX.RegisterServerCallback('lsrp-motels:getPropertyInventory', function(source, 
 
 	cb({
 		blackMoney = blackMoney,
+		money = money,
 		items      = items,
 		weapons    = weapons
 	})
@@ -207,10 +213,12 @@ end)
 ESX.RegisterServerCallback('lsrp-motels:getPlayerInventory', function(source, cb)
 	local xPlayer    = ESX.GetPlayerFromId(source)
 	local blackMoney = xPlayer.getAccount('black_money').money
+	local money = xPlayer.getAccount('money').money
 	local items      = xPlayer.inventory
 
 	cb({
 		blackMoney = blackMoney,
+		money = money,
 		items      = items,
 		weapons    = xPlayer.getLoadout()
 	})
@@ -236,12 +244,13 @@ AddEventHandler('lsrp-motels:getItemBed', function(owner, type, item, count)
 			if count > 0 and inventoryItem.count >= count then
 			
 				-- can the player carry the said amount of x item?
-				if sourceItem.limit ~= -1 and (sourceItem.count + count) > sourceItem.limit then
-					TriggerClientEvent('esx:showNotification', _source, _U('player_cannot_hold'))
-				else
+				--if sourceItem.limit ~= nil and (sourceItem.count + count) > sourceItem.limit then
+				if xPlayer.canCarryItem(item, count) then
 					inventory.removeItem(item, count)
 					xPlayer.addInventoryItem(item, count)
 					TriggerClientEvent('esx:showNotification', _source, _U('have_withdrawn', count, inventoryItem.label))
+				else
+					TriggerClientEvent('esx:showNotification', _source, _U('player_cannot_hold'))
 				end
 			else
 				TriggerClientEvent('esx:showNotification', _source, _U('not_enough_in_property'))
@@ -428,11 +437,16 @@ end)
 ESX.RegisterServerCallback('lsrp-motels:getPropertyInventoryBed', function(source, cb, owner)
 	local xPlayer    = ESX.GetPlayerFromIdentifier(owner)
 	local blackMoney = 0
+	local money = 0
 	local items      = {}
 	local weapons    = {}
 
 	TriggerEvent('esx_addonaccount:getAccount', 'motels_bed_black_money', xPlayer.identifier, function(account)
 		blackMoney = account.money
+	end)
+
+	TriggerEvent('esx_addonaccount:getAccount', 'motels_bed_money', xPlayer.identifier, function(account2)
+		money = account2.money
 	end)
 
 	TriggerEvent('esx_addoninventory:getInventory', 'motels_bed', xPlayer.identifier, function(inventory)
@@ -445,6 +459,7 @@ ESX.RegisterServerCallback('lsrp-motels:getPropertyInventoryBed', function(sourc
 
 	cb({
 		blackMoney = blackMoney,
+		money = money,
 		items      = items,
 		weapons    = weapons
 	})
@@ -453,10 +468,12 @@ end)
 ESX.RegisterServerCallback('lsrp-motels:getPlayerInventoryBed', function(source, cb)
 	local xPlayer    = ESX.GetPlayerFromId(source)
 	local blackMoney = xPlayer.getAccount('black_money').money
+	local money = xPlayer.getAccount('money').money
 	local items      = xPlayer.inventory
 
 	cb({
 		blackMoney = blackMoney,
+		money = money,
 		items      = items,
 		weapons    = xPlayer.getLoadout()
 	})

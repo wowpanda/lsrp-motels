@@ -34,7 +34,7 @@ Citizen.CreateThread(function()
 end)
 
 
-AddEventHandler('playerSpawned', function()
+AddEventHandler('esx:onPlayerSpawn', function()
 
 
 		Citizen.CreateThread(function()
@@ -146,7 +146,7 @@ function PlayerDressings()
     ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'room',
 	{
 		title    = 'Player Clothing',
-		align    = 'top-left',
+		align    = 'top',
 		elements = {
             {label = _U('player_clothes'), value = 'player_dressing'},
 	        {label = _U('remove_cloth'), value = 'remove_cloth'}
@@ -168,7 +168,7 @@ function PlayerDressings()
 				ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'player_dressing',
 				{
 					title    = _U('player_clothes'),
-					align    = 'top-left',
+					align    = 'top',
 					elements = elements
 				}, function(data2, menu2)
 
@@ -202,7 +202,7 @@ function PlayerDressings()
 
 				ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'remove_cloth', {
 					title    = _U('remove_cloth'),
-					align    = 'top-left',
+					align    = 'top',
 					elements = elements
 				}, function(data2, menu2)
 					menu2.close()
@@ -308,10 +308,10 @@ AddEventHandler('lsrp-motels:roomOptions', function(room, motel)
         'default', GetCurrentResourceName(), 'lsrp-motels',
         {
             title    = motelName..' Room '..motelRoom,
-            align    = 'top-right',
+            align    = 'top',
             elements = { 
-                { label = 'Enter Room', value = 'enter' },
-                { label = 'Cancel Rental', value = 'cancel' }
+                { label = 'Betreed kamer', value = 'enter' },
+                { label = 'Huur stopzetten', value = 'cancel' }
             }
         },
     function(data, entry)
@@ -353,10 +353,10 @@ AddEventHandler('lsrp-motels:roomMenu', function(room, motel)
         if Config.SwitchCharacterSup then
         table.insert(options, {label = 'Change Character', value = 'changechar'})
         end
-        table.insert(options, {label = 'Leave Room', value = 'leaveroom'})
+        table.insert(options, {label = 'Kamer verlaten', value = 'leaveroom'})
         if roomOwner == playerIdent then
-        table.insert(options, {label = 'Open Room Inventory', value = 'inventory'})
-        table.insert(options, {label = 'Invite Citizen', value = 'inviteplayer'})
+        table.insert(options, {label = 'Open inventaris', value = 'inventory'})
+        table.insert(options, {label = 'Een bewoner uitnodigen', value = 'inviteplayer'})
         end
         
         
@@ -365,7 +365,7 @@ AddEventHandler('lsrp-motels:roomMenu', function(room, motel)
         'default', GetCurrentResourceName(), 'lsrp-motels',
         {
             title    = motelName..' Room '..motelRoom,
-            align    = 'top-right',
+            align    = 'top',
             elements = options
         },
     function(data, menu)
@@ -404,7 +404,7 @@ AddEventHandler('lsrp-motels:roomMenu', function(room, motel)
                     TriggerEvent("mythic_progbar:client:progress", {
                         name = "renting_motel",
                         duration = 1500,
-                        label = "Accessing Room Inventory",
+                        label = "Kamerinventaris",
                         useWhileDead = false,
                         canCancel = true,
                         controlDisables = {
@@ -420,7 +420,7 @@ AddEventHandler('lsrp-motels:roomMenu', function(room, motel)
                         end
                 end)    
         else
-            TriggerClientEvent('esx:showNotification', '~w~Accessible by Motel ~r~Owner~w~ only!')  
+            TriggerClientEvent('esx:showNotification', '~w~Toegang alleen voor de ~r~huurder~w~!')  
         end
         elseif value == 'inviteplayer' then
             local myInstance = nil
@@ -443,13 +443,13 @@ AddEventHandler('lsrp-motels:roomMenu', function(room, motel)
                     end
                 end
             else
-                table.insert(elements, {label = 'No Citizens Outside.'})
+                table.insert(elements, {label = 'Er staat niemand voor de deur.'})
             end
 
 			ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'room_invite',
 			{
-				title    = motelName..' Room '..motelRoom .. ' - ' .. _U('invite') ..' Citizen',
-				align    = 'top-right',
+				title    = motelName..' Kamer '..motelRoom .. ' - ' .. _U('invite') ..' Bewoner',
+				align    = 'top',
 				elements = elements,
             }, function(data2, menu2)
                 ESX.TriggerServerCallback('lsrp-motels:getMotelRoomID', function(roomno)
@@ -518,12 +518,12 @@ function roomMarkers()
     local playerPed = PlayerPedId()
     local coords    = GetEntityCoords(playerPed)
     -- Exit Marker
-    for k,v in pairs(Config.Zones) do
+   --[[ for k,v in pairs(Config.Zones) do
         for km,vm in pairs(v.Rooms) do
             distance = GetDistanceBetweenCoords(coords, v.roomExit.x, v.roomExit.y, v.roomExit.z, true)
             if (distance < 1.0) then
                 if curRoom ~= nil then
-                    DrawText3D(v.roomExit.x, v.roomExit.y, v.roomExit.z + 0.35, 'Press [~g~E~s~] to exit')
+                    DrawText3D(v.roomExit.x, v.roomExit.y, v.roomExit.z + 0.35, 'Druk op [~g~E~s~] om de woning te verlaten')
                     if IsControlJustReleased(0, Keys['E']) then
                         ESX.UI.Menu.CloseAll()
                         TriggerEvent('lsrp-motels:exitRoom', curMotel, curRoom)
@@ -531,13 +531,24 @@ function roomMarkers()
                 end  
             end
         end
+    end]]
+	
+	for k,v in pairs(Config.Zones) do
+        distance = GetDistanceBetweenCoords(coords, v.roomExit.x, v.roomExit.y, v.roomExit.z, true)
+        if distance < 1.5 then
+            --DrawText3Ds(v.roomExit.x, v.roomExit.y, v.roomExit.z + 0.15, ' ~b~[E]~w~ ile odadan çık!')
+            DrawMarker(20, v.roomExit.x, v.roomExit.y, v.roomExit.z + -0.11, 0, 0.50, 0, 0, 0, 0, 0.45,0.25,0.25, 255, 0, 0, 255, 0.0, 0.10, 0, 0.0, 0, 0.0, 0)
+                if IsControlJustReleased(0, Keys['E']) then
+                    TriggerEvent('lsrp-motels:exitRoom', curRoom, curMotel)
+                end
+        end
     end
 
     -- Room Menu Marker
     for k,v in pairs(Config.Zones) do
         distance = GetDistanceBetweenCoords(coords, v.Menu.x, v.Menu.y, v.Menu.z, true)
         if distance < 1.0 then
-            DrawText3D(v.Menu.x, v.Menu.y, v.Menu.z + 0.35, 'Press [~g~E~s~] to access menu.')
+            DrawText3D(v.Menu.x, v.Menu.y, v.Menu.z + 0.35, 'Druk op [~g~E~s~] om het menu te openen.')
                 if IsControlJustReleased(0, Keys['E']) then
                     TriggerEvent('lsrp-motels:roomMenu', curRoom, curMotel)
                 end
@@ -549,7 +560,7 @@ function roomMarkers()
         distance = GetDistanceBetweenCoords(coords, v.Inventory.x, v.Inventory.y, v.Inventory.z, true)
         if distance < 1.0 then
             if roomOwner == playerIdent then
-            DrawText3D(v.Inventory.x, v.Inventory.y, v.Inventory.z + 0.35, 'Press [~g~E~s~] to change outfit.')
+            DrawText3D(v.Inventory.x, v.Inventory.y, v.Inventory.z + 0.35, 'Druk op [~g~E~s~] om de kledingkast te openen.')
                 if IsControlJustReleased(0, Keys['E']) then
                     PlayerDressings()
                 end
@@ -562,7 +573,7 @@ function roomMarkers()
         distance = GetDistanceBetweenCoords(coords, v.BedStash.x, v.BedStash.y, v.BedStash.z, true)
         if distance < 1.0 then
             if roomOwner == playerIdent then
-            DrawText3D(v.BedStash.x, v.BedStash.y, v.BedStash.z + 0.1, 'Press [~g~E~s~] to access stash.')
+            DrawText3D(v.BedStash.x, v.BedStash.y, v.BedStash.z + 0.1, 'Druk op [~g~E~s~] om de stash te openen.')
                 if IsControlJustReleased(0, Keys['E']) then
                     OpenStash()
                 end
@@ -587,7 +598,7 @@ if myMotel then
                 DrawMarker(20, vm.entry.x, vm.entry.y, vm.entry.z, 0.0, 0.0, 0.0, 0, 0.0, 0.0, Config.RoomMarker.x, Config.RoomMarker.y, Config.RoomMarker.z, Config.RoomMarker.Owned.r, Config.RoomMarker.Owned.g, Config.RoomMarker.Owned.b, 100, false, true, 2, false, false, false, false)	
                 end
                 if (distance < 1.0) then
-                    DrawText3D(vm.entry.x, vm.entry.y, vm.entry.z + 0.35, 'Press [~g~E~s~] for options.')
+                    DrawText3D(vm.entry.x, vm.entry.y, vm.entry.z + 0.35, 'Druk op [~g~E~s~] voor opties.')
                     if IsControlJustReleased(0, Keys['E']) then
                         TriggerEvent("lsrp-motels:roomOptions", vm.instancename, k)
                     end
@@ -602,7 +613,7 @@ else
                 for km,vm in pairs(v.Rooms) do
                     distance = GetDistanceBetweenCoords(coords, vm.entry.x, vm.entry.y, vm.entry.z, true)
                     if (distance < 1.0) then
-                        DrawText3D(vm.entry.x, vm.entry.y, vm.entry.z + 0.35, 'Press [~g~E~s~] to rent Room ~b~'..vm.number..' ~w~for $~b~'..Config.PriceRental)
+                        DrawText3D(vm.entry.x, vm.entry.y, vm.entry.z + 0.35, 'Druk op [~g~E~s~] om kamer ~b~'..vm.number..' ~w~te huren voor ~b~€'..Config.PriceRental)
                         if IsControlJustReleased(0, Keys['E']) then
                             TriggerEvent('lsrp-motels:rentRoom', vm.instancename)
                         end
